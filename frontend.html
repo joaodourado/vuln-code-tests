@@ -1,0 +1,81 @@
+<html>
+<body>
+    <div theme="ecommerce">
+        <section class="maincontainer">
+            <div class="container is-page">
+                <header class="navigation-header">
+                    <section class="top-links">
+                        <a href="/">Home</a>
+                    </section>
+                </header>
+                <header class="notification-header">
+                </header>
+                <section class="product">
+                    <h3>Book Custom Avatar Recording</h3>
+                    $1.000<br><br>
+                    <label>Description:</label>
+                    <p>Synthesia STUDIO allows you to create videos directly in a web browser. Simply select an actor,
+                        type in the text and use AI to generate your video without the need for actors, film crew or
+                        expensive equipment and post-production. You can create stunning business videos in minutes.</p>
+                    <p>A Synthesia custom avatar is a digital, but photo-realistic representation of a human. These
+                        custom avatars can be used to create business videos with Synthesia. You can create a custom
+                        avatar of yourself or a team member for example (with explicit consent of the person).</p>
+                    <p>To create a custom avatar, simply pick the location of the Synthesia recording studio you which
+                        to use, and click the button to get going!</p>
+                    <form id="bookForm" action="studio/book/" method="POST">
+                        <input required="" type="hidden" name="productId" value="1">
+                        <script>
+                            var stores = ["London", "New York", "Copenhagen", "Munich", "Amsterdam"];
+                            var store = (new URLSearchParams(window.location.search)).get('storeId');
+                            document.write('<select name="storeId">');
+                            if (store) {
+                                document.write('<option selected>' + store + '</option>');
+                            }
+                            for (var i = 0; i < stores.length; i++) {
+                                if (stores[i] === store) {
+                                    continue;
+                                }
+                                document.write('<option>' + stores[i] + '</option>');
+                            }
+                            document.write('</select>');
+                        </script>
+                        <button type="submit" class="button">Book Custom Avatar Recording</button>
+                    </form>
+                    <span id="bookResult"></span>
+                    <script>
+                        window.contentType = 'application/x-www-form-urlencoded';
+
+                        function payload(data) {
+                            return new URLSearchParams(data).toString();
+                        }
+                    </script>
+                    <script>
+                        document.getElementById("bookForm").addEventListener("submit", function (e) {
+                            book(this.getAttribute("method"), this.getAttribute("action"), new FormData(this));
+                            e.preventDefault();
+                        });
+
+                        function book(method, path, data) {
+                            const retry = (tries) => tries == 0 ? null : fetch(path, {
+                                method, headers: {
+                                    'Content-Type': window.contentType
+                                }, body: payload(data)
+                            })
+                                .then(res => res.status === 200 ?
+                                    res.text().then(t => isNaN(t) ? t : t + " slots available") :
+                                    "Could not book!"
+                                )
+                                .then(res => document.getElementById("bookResult").innerHTML = res)
+                                .catch(e => retry(tries - 1));
+                            retry(3);
+                        }
+                    </script>
+                    <div class="is-linkback">
+                        <a href="/">Return to list</a>
+                    </div>
+                </section>
+            </div>
+        </section>
+    </div>
+</body>
+</html>
