@@ -11,7 +11,7 @@ services:
     volumes:
       - ./web:/var/www/html
       - /var/run/docker.sock:/var/run/docker.sock
-		security_opt:
+    security_opt:
       - seccomp:unconfined
   db:
     image: mysql:5.7
@@ -24,7 +24,7 @@ services:
       - MYSQL_PASSWORD=password
     volumes:
       - db_data:/var/lib/mysql
-		network_mode: host
+    network_mode: host
   compute_script:
     image: python:3.9-alpine
     volumes:
